@@ -1,0 +1,118 @@
+CREATE TABLE `bd_subject` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '主键',
+  `name` VARCHAR(64) NOT NULL DEFAULT '64' COMMENT '学科名称，一级二级三级研究方向均可',
+  `code` VARCHAR(64) NOT NULL DEFAULT '64' COMMENT '学科编码',
+  `type` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '门类：1 一级学科：2 二级学科：3 研究方向：4',
+  `parent_id` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '如果是二级学科，那么 parent_id 就是对应一级学科的id，一级学科 parent_id = 0',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_unique` (`type`,`name`),
+  UNIQUE KEY `uniq_unique2` (`type`,`code`),
+  KEY `idx_query` (`name`),
+  KEY `idx_query2` (`code`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='研究生学科，研究方向数据表'
+
+
+
+CREATE TABLE `bd_sharedShar` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '主键',
+  `prefix` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '前缀',
+  `content` VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '内容',
+  `suffix` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '后缀',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='学长学姐温馨提示'
+
+
+
+
+CREATE TABLE `bd_boarding_experience` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '主键',
+  `university_id` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '报考高校 id',
+  `university_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '报考高校名称',
+  `category_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '报考门类',
+  `first_subject_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '报考的一级学科',
+  `secondary_subject_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '报考的二级学科',
+  `discipline` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '报考的专业',
+  `direction` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '研究方向',
+  `exam_year` INT NOT NULL DEFAULT '0' COMMENT '考试年份 如 2021',
+  `exam_score` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '初试分数',
+  `exam_rank` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '初试名次',
+  `re_exam_date` INT NOT NULL DEFAULT '0' COMMENT '复试时间，如 20210322',
+  `re_exam_score` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '复试分数',
+  `rank` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '初试+复试权重排名',
+  `weight_total_score` BIGINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '加权总分数',
+  `contact_info` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '联系方式',
+  `master_type` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '硕士类型',
+  `bachelor_university_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '本科学校名称',
+  `experience` VARCHAR(512) NOT NULL DEFAULT '' COMMENT '经验心得',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='考研上岸经验'
+
+
+CREATE TABLE `bd_university` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '主键',
+  `university_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校 id',
+  `university_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校名称',
+  `has_postgraduate_institute` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否有研究生院',
+  `subordination` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校 隶属关系，工信部 教育部等',
+  `decide_passing_score_self` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '自主划线',
+  `question_site` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '在线咨询网站',
+  `notation_site` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '高校信息网站',
+  `adjustment_site` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '调剂网站',
+  `recruitment_site` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '招生网站',
+  `location_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校所在地编码',
+  `location_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校所在地名称',
+  `sub_location_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校所在地方编码',
+  `sub_location_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校所在地方名称',
+  `project_nef` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '985高校',
+  `project_too` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '211高校',
+  `project_first_class_university` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '双一流建设高校',
+  `project_first_class_subject` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '双一流学科建设高校',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_unique` (`university_name`),
+  KEY `idx_unique_id` (`university_id`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='考研招生高校详情'
+
+
+
+CREATE TABLE `bd_recruitment_detail` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL COMMENT '主键',
+  `university_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校ID',
+  `university_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '高校名称',
+  `master_type` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '硕士类型',
+  `category_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '门类名称',
+  `category_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '门类编码',
+  `first_subject_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '一级学科名称',
+  `first_subject_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '一级学科代码',
+  `secondary_subject_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '二级学科名称',
+  `secondary_subject_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '二级学科代码',
+  `discipline_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '专业名称',
+  `discipline_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '专业代码',
+  `direction_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '研究方向名称',
+  `direction_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '研究方向代码',
+  `institute_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '研究所名称',
+  `institute_code` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '研究所代码',
+  `learning_mode` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '学习方式，全日制 非全日制',
+  `exam_mode` TINYINT UNSIGNED NOT NULL DEFAULT '0' COMMENT '考试方式，统考 or ？',
+  `exam_outline_site` VARCHAR(256) NOT NULL DEFAULT '' COMMENT '考试大纲',
+  `cross_subject` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '跨专业情况',
+  `recruitment_by_exam` INT UNSIGNED NOT NULL DEFAULT '0' COMMENT '不含推免招生人数',
+  `recruitment_by_exam_info` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '不含推免招生人数 以字符串形式表示',
+  `recruitment_mode` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '招生方式：按照专业招收 按照研究方向招收',
+  `remark` VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '备注',
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_unique` (`university_id`,`first_subject_code`,`secondary_subject_code`,`discipline_code`,`direction_name`) COMMENT '唯一',
+  KEY `idx_query_university` (`university_id`) COMMENT '按照高校查询',
+  KEY `idx_query_recruitment` (`first_subject_code`,`secondary_subject_code`,`recruitment_by_exam`) COMMENT '按照招生人数查询'
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='高校招生详情'
+
+
